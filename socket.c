@@ -152,8 +152,11 @@ int sock_connect(socket_t *sock, int is_serv, char *port)
 	sa.sin_addr.s_addr = htonl(INADDR_ANY);
 
     setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(int));
+
+#ifndef WIN32 //win32 doesn't support SO_REUSEPORT
     setsockopt(sock->fd, SOL_SOCKET, SO_REUSEPORT, &reuseport, sizeof(int));
- 
+#endif
+
 	if(sock->type == SOCK_DGRAM)
 		if( bind(sock->fd, (const struct sockaddr *)&sa, sizeof(struct sockaddr_in))!= 0)
 			printf("Bind failed\n");
